@@ -1,2 +1,82 @@
-mklink /d "C:\Users\Nanami Matsumoto\AppData\Roaming\Sublime Text 3\Installed Packages" "C:\Users\Nanami Matsumoto\Dropbox\Sublime Text 3\Installed Packages"
-mklink /d "C:\Users\Nanami Matsumoto\AppData\Roaming\Sublime Text 3\Packages" "C:\Users\Nanami Matsumoto\Dropbox\Sublime Text 3\Packages"
+
+// Janken2.java
+import java.io.*;
+
+class Human {
+  String snow;
+  int now; // あなたの手
+  int before; // あなたの前の手
+
+  Human() {
+    before = 0; // はじめは、前の手がない
+  }
+
+  void GetData() throws IOException {
+    System.out.println("1:ぐー 2:ちょき 3:ぱー 0:終わる");
+    BufferedReader buf = new BufferedReader(new InputStreamReader(System.in));
+    snow = buf.readLine();
+    now = Integer.parseInt(snow);
+    if (now == 0) { // 入力されたのが「0」なら終了
+      System.exit(0);
+    }
+    now = now - 1; // 配列用に減算
+
+    switch (now) {
+      case 0:
+        System.out.println("あなた　　　:ぐー");
+        break;
+      case 1:
+        System.out.println("あなた　　　:ちょき");
+        break;
+      case 2:
+        System.out.println("あなた　　　:ぱー");
+    }
+  }
+}
+
+public class jyanken2 {
+  public static void main(String[] args) throws IOException {
+    int cp; // コンピュータの手
+    int jg; // 審判
+    int tTable[][] = new int[3][3]; // 戦略表
+    int i;
+    int j;
+    Human you = new Human();
+
+    for (i = 0; i < 3; i++) {
+      for (j = 0; j < 3; j++) {
+        tTable[i][j] = 0;
+      }
+    }
+
+    while (true) {
+      you.GetData();
+      if (tTable[you.before][0] > tTable[you.before][1]
+          && tTable[you.before][0] > tTable[you.before][2]) { // あなたが、ぐーを出しやすい
+        cp = 2;
+        System.out.println("コンピュータ:ぱー");
+      } else if (tTable[you.before][1] > tTable[you.before][2]) { // あなたが、ちょきを出しやすい
+        cp = 0;
+        System.out.println("コンピュータ:ぐー");
+      } else { // あなたが、ぱーを出しやすい
+        cp = 1;
+        System.out.println("コンピュータ:ちょき");
+      }
+
+      jg = (cp - you.now + 3) % 3; // 審判
+      switch (jg) {
+        case 0:
+          System.out.println("あいこ");
+          break;
+        case 1:
+          System.out.println("勝ち");
+          break;
+        case 2:
+          System.out.println("負け");
+      }
+
+      tTable[you.before][you.now] = tTable[you.before][you.now] + 1; // 戦略表の更新
+      you.before = you.now;
+    }
+  }
+}
